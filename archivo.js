@@ -22,30 +22,12 @@ function actualizarProgreso() {
 
     for (let i = 0; i < totalTareas; i++) {
         const tarea = taskList.children[i];
-        const checkbox = tarea.querySelector('input[type="checkbox"]');
-        if (checkbox && checkbox.checked) {
-            tareasCompletadas++;
-        }
-    }
-
-    const progressBar = document.getElementById('progressBar');
-    const progreso = (tareasCompletadas / totalTareas) * 100;
-    progressBar.style.width = progreso + '%';
-}
-
-// Función para actualizar la barra de progreso
-function actualizarProgreso() {
-    const taskList = document.getElementById('taskList');
-    const totalTareas = taskList.children.length;
-    let tareasCompletadas = 0;
-
-    for (let i = 0; i < totalTareas; i++) {
-        const tarea = taskList.children[i];
         const checkbox = document.getElementById('task' + (i + 1));
         if (checkbox.checked) {
             tareasCompletadas++;
         }
     }
+
     const progressBar = document.getElementById('progressBar');
     const progreso = (tareasCompletadas / totalTareas) * 100;
     progressBar.style.width = progreso + '%';
