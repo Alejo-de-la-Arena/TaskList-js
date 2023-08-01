@@ -49,31 +49,6 @@ header {
     padding: 20px;
 }
 
-/* Estilos para las tarjetas de tareas */
-.task-card {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.task-card.completed {
-    background-color: #f2f2f2;
-    text-decoration: line-through;
-}
-
-.priority-label {
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-weight: bold;
-    margin-right: 10px;
-}
-
-/* Estilos para el calendario */
 .calendar-day {
     border: 1px solid #ccc;
     padding: 10px;
@@ -81,7 +56,6 @@ header {
     margin-bottom: 10px;
 }
 
-/* Otros estilos (botones, input, etc.) */
 input[type="text"] {
     width: 100%;
     padding: 10px;
@@ -93,29 +67,6 @@ input[type="text"] {
 .calendar-days {
     display: flex;
     flex-direction: column;
-}
-
-.calendar-day {
-    border: 1px solid #ccc;
-    padding: 10px;
-    margin-bottom: 10px;
-}
-
-/* ... otros estilos ... */
-.task-progress {
-    width: 100%;
-    height: 10px;
-    background-color: #f2f2f2;
-    border-radius: 5px;
-    overflow: hidden;
-    margin-bottom: 5px;
-}
-
-.progress-bar {
-    height: 100%;
-    background-color: #007bff;
-    width: 0;
-    transition: width 0.3s;
 }
 
 .p-task{

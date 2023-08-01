@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -19,39 +18,21 @@
             <div class="calendar-days">
                 <div class="calendar-day">
                     <h3>Tareas hoy</h3>
-                    <!-- Aquí se mostrarán las tareas del dia -->
-                    <div class="task-progress">
-                        <div class="progress-bar" id="progressBar" style="width: 0;"></div>
-                    </div>
-                    <div class="task-inputs">
-                        <input type="checkbox" id="task1" />
-                        <label for="task1">Tarea 1</label>
-                        <input type="checkbox" id="task2" />
-                        <label for="task2">Tarea 2</label>
-                        <input type="checkbox" id="task3" />
-                        <label for="task3">Tarea 3</label>
-                        <input type="checkbox" id="task4" />
-                        <label for="task4">Tarea 4</label>
-                        <input type="checkbox" id="task5" />
-                        <label for="task5">Tarea 5</label>
-                    </div>
                     <div>
                         <p class="p-task"> ¿Has realizado alguna tarea? Tickeala! </p>
                     </div>
+                    <p id="progresoTareas">Tareas completadas: 0 / 0</p>
                 </div>
-                <!-- Repite este bloque para cada día -->
             </div>
         </section>
         <div class="list-view">
             <h2>Lista de Tareas</h2>
             <div class="task-inputs">
                 <input type="text" id="newTaskInput" placeholder="Agregar nueva tarea">
-            </div>
-            <div>
-                <p> ¡Maximo 5 tareas diarias! (No te exijas de mas) </p>
+                <button id="addTaskButton">Agregar</button>
             </div>
             <ul id="taskList">
-                <!-- Las tareas se agregarán aquí dinámicamente -->
+                <!-- Las tareas se van a agregar aquí dinámicamente -->
             </ul>
         </div>
     </div>
