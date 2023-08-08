@@ -1,60 +1,86 @@
-const tareas = []; // Array para almacenar todas las tareas
+const tareas = {}; // Objeto para almacenar todas las tareas
 
 // Función para guardar una nueva tarea
 function guardarTarea() {
     const tareaInput = document.getElementById('newTaskInput');
     const tarea = tareaInput.value.trim();
     if (tarea !== '') {
-        // Crear el checkbox para la nueva tarea
+        // Agregar la nueva tarea al objeto
+        const nuevaTareaKey = 'tarea' + (Object.keys(tareas).length + 1);
+        tareas[nuevaTareaKey] = { nombre: tarea, completada: false };
+
+        // Almacenar el objeto actualizado en el LocalStorage
+        localStorage.setItem('tareas', JSON.stringify(tareas));
+
+        // Crear y mostrar la tarea en la lista
         const nuevaTareaCheckbox = document.createElement('input');
         nuevaTareaCheckbox.type = 'checkbox';
-        nuevaTareaCheckbox.id = 'task' + (tareas.length + 1);
+        nuevaTareaCheckbox.id = nuevaTareaKey;
 
-        // Crear el label para el checkbox
         const nuevaTareaLabel = document.createElement('label');
-        nuevaTareaLabel.htmlFor = 'task' + (tareas.length + 1);
+        nuevaTareaLabel.htmlFor = nuevaTareaKey;
         nuevaTareaLabel.textContent = tarea;
 
-        // Crear el elemento <li> para la nueva tarea y agregar el checkbox y el label
         const nuevaTareaElemento = document.createElement('li');
         nuevaTareaElemento.appendChild(nuevaTareaCheckbox);
         nuevaTareaElemento.appendChild(nuevaTareaLabel);
 
-        // Agregar la nueva tarea al array
-        const nuevaTarea = {
-            nombre: tarea,
-            completada: false,
-            descripcion: '',
-            prioridad: 'normal'
-        };
-        tareas.push(nuevaTarea);
-
-        // Agregar el elemento <li> al calendario de tareas
         const taskList = document.getElementById('taskList');
         taskList.appendChild(nuevaTareaElemento);
 
-        // Agregar el evento de escucha al checkbox recién creado
         nuevaTareaCheckbox.addEventListener('change', function() {
-            nuevaTarea.completada = this.checked;
+            tareas[nuevaTareaKey].completada = this.checked;
             actualizarProgreso();
+            // Actualizar el estado de la tarea completada si es necesario
+            // Puedes adaptar esta parte según tus necesidades
         });
 
-        // Llamar a la función para actualizar el progreso
+        // Actualizar progreso
         actualizarProgreso();
     }
 }
 
+// Función para cargar tareas desde el objeto en el archivo al cargar la página
+function cargarTareasDesdeArchivo() {
+    const taskList = document.getElementById('taskList');
+    for (const tareaKey in tareas) {
+        const nuevaTareaCheckbox = document.createElement('input');
+        nuevaTareaCheckbox.type = 'checkbox';
+        nuevaTareaCheckbox.id = tareaKey;
+        nuevaTareaCheckbox.checked = tareas[tareaKey].completada;
+
+        const nuevaTareaLabel = document.createElement('label');
+        nuevaTareaLabel.htmlFor = tareaKey;
+        nuevaTareaLabel.textContent = tareas[tareaKey].nombre;
+
+        const nuevaTareaElemento = document.createElement('li');
+        nuevaTareaElemento.appendChild(nuevaTareaCheckbox);
+        nuevaTareaElemento.appendChild(nuevaTareaLabel);
+
+        taskList.appendChild(nuevaTareaElemento);
+
+        nuevaTareaCheckbox.addEventListener('change', function() {
+            tareas[tareaKey].completada = this.checked;
+            actualizarProgreso();
+            // Actualizar el estado de la tarea completada si es necesario
+            // Puedes adaptar esta parte según tus necesidades
+        });
+    }
+
+    // Actualizar progreso
+    actualizarProgreso();
+}
+
 // Función para actualizar el progreso
 function actualizarProgreso() {
-    const checkboxes = document.querySelectorAll('#taskList input[type="checkbox"]');
-    const totalTareas = checkboxes.length;
+    const totalTareas = Object.keys(tareas).length;
     let tareasCompletadas = 0;
 
-    checkboxes.forEach((checkbox) => {
-        if (checkbox.checked) {
+    for (const tareaKey in tareas) {
+        if (tareas[tareaKey].completada) {
             tareasCompletadas++;
         }
-    });
+    }
 
     const progresoTareas = document.getElementById('progresoTareas');
     const progreso = (tareasCompletadas / totalTareas) * 100;
@@ -80,4 +106,7 @@ document.addEventListener('DOMContentLoaded', function () {
             guardarTarea();
         });
     }
+
+    // Cargar tareas desde el objeto en el archivo al cargar la página
+    cargarTareasDesdeArchivo();
 });
