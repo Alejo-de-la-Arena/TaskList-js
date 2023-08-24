@@ -4,16 +4,24 @@
     box-sizing: border-box;
 }
 
+:root {
+    --bg-color: #1c1c1c; /* Charcoal Black */
+    --text-color: #e0e0e0; /* Light Gray */
+    --main-color: #ff9933; /* Cyber Orange */
+    --accent-color: #00ffcc; /* Neon Green */
+}
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f2f2f2;
+    background-color: var(--bg-color);
 }
 
 header {
-    background-color: #007bff;
-    color: #fff;
+    background-color: var(--bg-color);
+    color: var(--main-color);
+    text-decoration: underline var(--main-color);
     text-align: center;
     padding: 20px;
 }
@@ -22,12 +30,14 @@ header {
     max-width: 1200px;
     margin: 0 auto;
     display: flex;
+    border: .3rem solid var(--bg-color);
 }
 
 .calendar-view {
     flex: 1;
     margin-right: 20px;
-    background-color: #fff;
+    background-color: var(--bg-color);
+    color: var(--text-color);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
     border-radius: 5px;
@@ -35,16 +45,21 @@ header {
 
 .list-view {
     flex: 1;
-    background-color: #fff;
+    background-color: var(--bg-color);
+    color: var(--text-color);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
     border-radius: 5px;
 }
 
+.list-view p{
+    padding-top: 1.5rem;
+}
+
 .motivational-section {
     flex: 1;
-    background-color: #007bff;
-    color: #fff;
+    background-color: var(--second-bg-color);
+    color: var(--text-color);
     text-align: center;
     padding: 20px;
 }
@@ -59,7 +74,7 @@ header {
 input[type="text"] {
     width: 100%;
     padding: 10px;
-    border: 1px solid #ccc;
+    border: .2rem solid var(--accent-color);
     border-radius: 5px;
     margin-bottom: 10px;
 }
@@ -69,6 +84,10 @@ input[type="text"] {
     flex-direction: column;
 }
 
+.calendar-days h3{
+    color: var(--accent-color);
+}
+
 .p-task{
     padding-top: 1rem;
     height: auto;
@@ -76,16 +95,46 @@ input[type="text"] {
 
 .task-inputs{
     display: flex;
+    padding-top: 1rem;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
 
 #addTaskButton{
-    font-size: 1rem;
+    background-color: var(--bg-color);
+    color: var(--accent-color);
+    font-size: 1.2rem;
 }
 
 #addTaskButton:hover{
     cursor: pointer;
-    border: solid .2rem #007bff;
+    border: solid .1rem var(--accent-color);
+}
+
+footer{
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.motivation-p{
+    color: var(--main-color);
+    font-size: 2rem;
+}
+
+@media (max-width : 425px){
+    .container{
+        height: auto;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .motivation-p{
+        font-size: 1rem;
+    }
 }

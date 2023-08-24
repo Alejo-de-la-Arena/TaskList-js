@@ -1,18 +1,60 @@
-const tareas = {}; // Objeto para almacenar todas las tareas
+const tareas = {};
 
-// Función para guardar una nueva tarea
+function obtenerFechaPersonalizada() {
+    const fecha = new Date();
+    const diaSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    const mesActual = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    return `${diaSemana[fecha.getDay()]}, ${fecha.getDate()} de ${mesActual[fecha.getMonth()]} de ${fecha.getFullYear()}`;
+}
+
+//funcion para asignar
+function generarColorAleatorio() {
+    const letras = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+        color += letras[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
 function guardarTarea() {
     const tareaInput = document.getElementById('newTaskInput');
     const tarea = tareaInput.value.trim();
     if (tarea !== '') {
-        // Agregar la nueva tarea al objeto
         const nuevaTareaKey = 'tarea' + (Object.keys(tareas).length + 1);
         tareas[nuevaTareaKey] = { nombre: tarea, completada: false };
+
+        const nuevaTarea = {
+            nombre: tarea,
+            completada: false,
+            vencimiento: obtenerFechaPersonalizada(),
+            horaVencimiento: ''
+        };
+
+        const nuevaTareaHoraInput = document.createElement('input');
+        nuevaTareaHoraInput.type = 'time';
+        nuevaTareaHoraInput.id = nuevaTareaKey + '_hora';
+        nuevaTareaHoraInput.placeholder = 'Hora de vencimiento';
+
+        nuevaTareaHoraInput.addEventListener('change', function () {
+            nuevaTarea.horaVencimiento = this.value;
+            const horaActual = new Date().getHours();
+            const minutosActuales = new Date().getMinutes();
+            const horaVencimiento = nuevaTarea.horaVencimiento.split(':')[0];
+            const minutosVencimiento = nuevaTarea.horaVencimiento.split(':')[1];
+
+            if (parseInt(horaVencimiento) < horaActual || (parseInt(horaVencimiento) === horaActual && parseInt(minutosVencimiento) < minutosActuales)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'No puedes establecer una hora de vencimiento anterior a la hora actual',
+                });
+            }
+        });
 
         // Almacenar el objeto actualizado en el LocalStorage
         localStorage.setItem('tareas', JSON.stringify(tareas));
 
-        // Crear y mostrar la tarea en la lista
         const nuevaTareaCheckbox = document.createElement('input');
         nuevaTareaCheckbox.type = 'checkbox';
         nuevaTareaCheckbox.id = nuevaTareaKey;
@@ -22,25 +64,43 @@ function guardarTarea() {
         nuevaTareaLabel.textContent = tarea;
 
         const nuevaTareaElemento = document.createElement('li');
+        nuevaTareaElemento.style.backgroundColor = generarColorAleatorio(); // Asigna un color aleatorio a la tarea
         nuevaTareaElemento.appendChild(nuevaTareaCheckbox);
         nuevaTareaElemento.appendChild(nuevaTareaLabel);
+        nuevaTareaElemento.appendChild(nuevaTareaHoraInput);
 
         const taskList = document.getElementById('taskList');
         taskList.appendChild(nuevaTareaElemento);
 
-        nuevaTareaCheckbox.addEventListener('change', function() {
+        nuevaTareaCheckbox.addEventListener('change', function () {
             tareas[nuevaTareaKey].completada = this.checked;
             actualizarProgreso();
-            // Actualizar el estado de la tarea completada si es necesario
-            // Puedes adaptar esta parte según tus necesidades
+
+            if (this.checked) {
+                const horaActual = new Date().getHours();
+                const minutosActuales = new Date().getMinutes();
+                const horaVencimiento = tareas[nuevaTareaKey].horaVencimiento.split(':')[0];
+                const minutosVencimiento = tareas[nuevaTareaKey].horaVencimiento.split(':')[1];
+
+                if (parseInt(horaVencimiento) >= horaActual || (parseInt(horaVencimiento) === horaActual && parseInt(minutosVencimiento) < minutosActuales)) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Felicidades!',
+                        text: 'Completaste tu tarea! ',
+                    });
+                }
+            }
         });
 
-        // Actualizar progreso
+        nuevaTareaHoraInput.addEventListener('change', function () {
+            tareas[nuevaTareaKey].horaVencimiento = this.value;
+            verificarVencimiento(tareas[nuevaTareaKey]);
+        });
+
         actualizarProgreso();
     }
 }
 
-// Función para cargar tareas desde el objeto en el archivo al cargar la página
 function cargarTareasDesdeArchivo() {
     const taskList = document.getElementById('taskList');
     for (const tareaKey in tareas) {
@@ -57,21 +117,59 @@ function cargarTareasDesdeArchivo() {
         nuevaTareaElemento.appendChild(nuevaTareaCheckbox);
         nuevaTareaElemento.appendChild(nuevaTareaLabel);
 
+        const nuevaTareaHoraInput = document.createElement('input');
+        nuevaTareaHoraInput.type = 'time';
+        nuevaTareaHoraInput.id = tareaKey + '_hora';
+        nuevaTareaHoraInput.value = tareas[tareaKey].horaVencimiento;
+        nuevaTareaElemento.appendChild(nuevaTareaHoraInput);
+
         taskList.appendChild(nuevaTareaElemento);
 
-        nuevaTareaCheckbox.addEventListener('change', function() {
+        nuevaTareaCheckbox.addEventListener('change', function () {
             tareas[tareaKey].completada = this.checked;
             actualizarProgreso();
-            // Actualizar el estado de la tarea completada si es necesario
-            // Puedes adaptar esta parte según tus necesidades
+
+            if (this.checked) {
+                const horaActual = new Date().getHours();
+                const minutosActuales = new Date().getMinutes();
+                const horaVencimiento = tareas[tareaKey].horaVencimiento.split(':')[0];
+                const minutosVencimiento = tareas[tareaKey].horaVencimiento.split(':')[1];
+
+                if (parseInt(horaVencimiento) < horaActual || (parseInt(horaVencimiento) === horaActual && parseInt(minutosVencimiento) < minutosActuales)) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Atención',
+                        text: 'Completaste la tarea después de su hora de vencimiento',
+                    });
+                }
+            }
+        });
+
+        nuevaTareaHoraInput.addEventListener('change', function () {
+            tareas[tareaKey].horaVencimiento = this.value;
+            verificarVencimiento(tareas[tareaKey]);
         });
     }
-
-    // Actualizar progreso
     actualizarProgreso();
 }
 
-// Función para actualizar el progreso
+function verificarVencimiento(tarea) {
+    if (tarea.horaVencimiento !== '') {
+        const horaCreacion = parseInt(tarea.vencimiento.split(' ')[5].split(':')[0]);
+        const minutosCreacion = parseInt(tarea.vencimiento.split(':')[1]);
+        const horaVencimiento = parseInt(tarea.horaVencimiento.split(':')[0]);
+        const minutosVencimiento = parseInt(tarea.horaVencimiento.split(':')[1]);
+
+        if (horaVencimiento < horaCreacion || (horaVencimiento === horaCreacion && minutosVencimiento < minutosCreacion)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'No puedes resolver la tarea antes de crearla!',
+            });
+        } 
+    }
+}
+
 function actualizarProgreso() {
     const totalTareas = Object.keys(tareas).length;
     let tareasCompletadas = 0;
@@ -87,9 +185,7 @@ function actualizarProgreso() {
     progresoTareas.textContent = `Tareas completadas: ${tareasCompletadas} / ${totalTareas}`;
 }
 
-// Esperar a que todos los elementos HTML estén cargados
 document.addEventListener('DOMContentLoaded', function () {
-    // Agregar evento al input para guardar la tarea estáticamente
     const newTaskInput = document.getElementById('newTaskInput');
     if (newTaskInput) {
         newTaskInput.addEventListener('keypress', function (event) {
@@ -99,14 +195,12 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Agregar evento al botón para guardar la tarea y actualizar el progreso
     const addTaskButton = document.getElementById('addTaskButton');
     if (addTaskButton) {
         addTaskButton.addEventListener('click', function () {
             guardarTarea();
         });
     }
-
-    // Cargar tareas desde el objeto en el archivo al cargar la página
     cargarTareasDesdeArchivo();
 });
+

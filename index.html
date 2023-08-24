@@ -12,6 +12,7 @@
     <header>
         <h1>Lista de Tareas</h1>
     </header>
+    <main> 
     <div class="container">
         <section class="calendar-view">
             <h2>Calendario de Tareas</h2>
@@ -34,12 +35,18 @@
             <ul id="taskList">
                 <!-- Las tareas se van a agregar aquí dinámicamente -->
             </ul>
+            <p> ¡Agrega una hora de finalización para completar tus tareas! </p>
         </div>
     </div>
-    <aside class="motivational-section">
-        <h2>Frases Motivacionales</h2>
-        <p id="motivationalPhrase">Aquí aparecerá una frase motivacional</p>
-    </aside>
+    </main>
+    <footer> 
+        <div class="motivational-section"> 
+            <p class="motivation-p"> El éxito llega cuando el esfuerzo diario se convierte en hábito </p>
+            
+        </div>
+    </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/luxon/2.0.0/luxon.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="./archivo.js"></script>
 </body>
 </html>
